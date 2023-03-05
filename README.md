@@ -15,7 +15,8 @@ Jenkins Pipeline Assignment 2023
     * [Spaceship JSON schema](#spaceship-json-schema)
     * [Error JSON schema](#error-json-schema)
 * [Setup](#setup)
-  * [Run locally](#run-locally)
+  * [Run the application locally](#run-the-application-locally)
+  * [Run Jenkins locally](#run-jenkins-locally)
   * [Tests](#tests)
   * [Requirements](#requirements)
 
@@ -93,7 +94,7 @@ DELETE  /api/v1/spaceships/{id}
 
 ## Setup
 
-### Run locally
+### Run the application locally
 
 Start 2 Postgres containers, one for each service (it will create required table and seed dummy data):
 
@@ -115,6 +116,20 @@ Run unit and integration tests:
 
 ```bash
 mvn clean verify
+```
+
+### Run Jenkins locally
+
+Start Jenkins container:
+
+```bash
+docker compose -f docker-compose.jenkins.yml up -d
+```
+
+Stop Jenkins container:
+
+```bash
+docker compose -f docker-compose.jenkins.yml down
 ```
 
 ### Requirements
