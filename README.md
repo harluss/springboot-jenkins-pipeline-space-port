@@ -1,33 +1,18 @@
 # Space Port
 
-Microservices Architecture Assignment 2023
+Jenkins Pipeline Assignment 2023
 
 ## Todo
 
 - [ ] description
 - [ ] requirements
-- [ ] Add rest of CRUD to Space Port
-- [ ] Add IT to Space Port
-- [ ] Add Spring Cloud Config
-- [ ] Add GitHub Action job to run `mvn clean verify` on commit and PR
-- [ ] Add auth with JWT
 
 ## Table of Contents
 
 * [Features](#features)
-  * [API Gateway](#api-gateway)
-  * [Eureka Service Discovery](#eureka-service-discovery)
-  * [Zipkin Tracing](#zipkin-tracing)
-  * [Port microservice](#port-microservice)
-    * [API](#api-2)
-    * [Spaceship JSON schema](#spaceship-json-schema)
   * [Hangar microservice](#hangar-microservice)
     * [API](#api)
     * [Spaceship JSON schema](#spaceship-json-schema)
-  * [Cantina microservice](#cantina-microservice)
-    * [API](#api-1)
-    * [Pilot JSON schema](#pilot-json-schema)
-  * [Common](#common)
     * [Error JSON schema](#error-json-schema)
 * [Setup](#setup)
   * [Run locally](#run-locally)
@@ -44,89 +29,6 @@ Microservices Architecture Assignment 2023
 - Unit tests with Junit5 and REST-assured
 - Integration tests with Testcontainers
 - Swagger documentation
-- Service Discovery with Eureka Service
-- API Gateway
-- Tracing with Sleuth and Zipkin
-
-### API Gateway
-
-APIs exposed at:
-
-```
-http://localhost:8080/api/v1/spaceships
-```
-
-Swagger UI exposed at:
-
-```
-http://localhost:8080/api/docs
-```
-
-### Eureka Service Discovery
-
-Console exposed at:
-
-```
-http://localhost:8761
-```
-
-### Zipkin Tracing
-
-Console exposed at:
-
-```
-http://localhost:9411/zipkin
-```
-
-### Port microservice
-
-#### API
-
-Pilot APIs exposed at:
-
-```
-http://localhost:8083/api/v1/spaceships
-```
-
-Swagger UI available at:
-
-```
-http://localhost:8083/api/docs
-```
-
-Available endpoints:
-
-```
-GET     /api/v1/spaceships
-```
-
-#### Spaceship JSON schema
-
-```json
-[
-  {
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "name": "string",
-    "maxSpeed": 0,
-    "payload": 0,
-    "crew": [
-      {
-        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "name": "string",
-        "species": "string",
-        "profession": "string",
-        "weapons": [
-          "string"
-        ]
-      }
-    ],
-    "armament": [
-      "string"
-    ],
-    "class": "string"
-  }
-]
-```
 
 ### Hangar microservice
 
@@ -141,7 +43,7 @@ http://localhost:8082/api/v1/spaceships
 Swagger UI available at:
 
 ```
-http://localhost:8082/api/docs
+http://localhost:8082/
 ```
 
 Available endpoints:
@@ -172,49 +74,6 @@ DELETE  /api/v1/spaceships/{id}
   "class": "string"
 }
 ```
-
-### Cantina microservice
-
-#### API
-
-Pilot APIs exposed at:
-
-```
-http://localhost:8081/api/v1/pilots
-```
-
-Swagger UI available at:
-
-```
-http://localhost:8081/api/docs
-```
-
-Available endpoints:
-
-```
-GET     /api/v1/pilots
-GET     /api/v1/pilots/{id}
-POST    /api/v1/pilots
-POST    /api/v1/pilots/crew
-PUT     /api/v1/pilots/{id}
-DELETE  /api/v1/pilots/{id}
-```
-
-#### Pilot JSON schema
-
-```json
-{
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "name": "string",
-  "species": "string",
-  "profession": "string",
-  "weapons": [
-    "string"
-  ]
-}
-```
-
-### Common
 
 #### Error JSON schema
 
