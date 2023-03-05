@@ -2,11 +2,14 @@ version: "3.8"
 
 services:
   jenkins:
+    container_name: space_port_jenkins
     image: jenkins/jenkins:lts
+    privileged: true
     ports:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /usr/local/bin/docker:/usr/local/bin/docker
 
   ssh-agent:
     image: jenkins/ssh-agent
