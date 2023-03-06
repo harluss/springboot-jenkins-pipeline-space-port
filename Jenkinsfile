@@ -13,14 +13,6 @@ pipeline {
                   echo 'about to fail'
                   sh 'exit 1'
             }
-            post {
-                success {
-                    echo 'test passed'
-                }
-                failure {
-                    error 'test failed'
-                }
-            }
         }
         stage('KABOOM PR') {
             when {
@@ -28,9 +20,6 @@ pipeline {
             }
             steps {
                 echo 'KABOOM!'
-            }
-            success {
-                echo 'test passed'
             }
         }
         stage('SKADOOSH MAIN') {
@@ -40,6 +29,14 @@ pipeline {
             steps {
                 echo 'SKADOOSH!'
             }
+        }
+    }
+    post {
+        success {
+            echo 'test passed'
+        }
+        failure {
+            error 'test failed'
         }
     }
 }
