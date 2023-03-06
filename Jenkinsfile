@@ -12,5 +12,10 @@ pipeline {
                 sh 'mvn clean verify'
             }
         }
+        stage('KABOOM') {
+            steps {
+                echo 'KABOOM!'
+            }
+        }
     }
 }
