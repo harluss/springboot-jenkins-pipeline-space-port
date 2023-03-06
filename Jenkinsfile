@@ -17,5 +17,10 @@ pipeline {
                 echo 'KABOOM!'
             }
         }
+        stage('SKADOOSH') {
+            steps {
+                echo 'SKADOOSH!'
+            }
+        }
     }
 }
