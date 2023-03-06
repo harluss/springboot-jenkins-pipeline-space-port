@@ -9,18 +9,33 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean verify'
+//                 sh 'mvn clean verify'
+                  echo 'about to fail'
             }
         }
-        stage('KABOOM') {
+        stage('KABOOM PR') {
+            when {
+                changeRequest()
+            }
             steps {
                 echo 'KABOOM!'
             }
         }
-        stage('SKADOOSH') {
+        stage('SKADOOSH MAIN') {
+            when {
+                branch "main"
+            }
             steps {
                 echo 'SKADOOSH!'
             }
+        }
+    }
+    post {
+        success {
+            echo 'test passed'
+        }
+        failure {
+            error 'test failed'
         }
     }
 }
