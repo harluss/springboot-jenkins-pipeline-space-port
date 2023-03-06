@@ -11,7 +11,6 @@ pipeline {
             steps {
 //                 sh 'mvn clean verify'
                   echo 'about to fail'
-                  sh 'exit 1'
             }
         }
         stage('KABOOM PR') {
