@@ -2,14 +2,16 @@ pipeline {
     agent any
 
     tools {
-       maven 'MVN_3_8_5'
-       jdk 'JDK_17'
+       maven 'MAVEN'
+       jdk 'JDK'
     }
     environment {
       FOO = 'bar'
+      SONAR_VER = '3.9.0.2155'
     }
     options {
         timeout(time: 5, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '5'))
     }
 
     stages {
@@ -20,6 +22,13 @@ pipeline {
             post {
                 always {
                     junit '**/target/surefire-reports/*.xml, **/target/failsafe-reports/*.xml'
+                }
+            }
+        }
+        stage('SonarQube Scan') {
+            steps {
+                withSonarQubeEnv(installationName: 'SONARQUBE_SERVER') {
+                    sh 'mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_VER}:sonar'
                 }
             }
         }
@@ -43,9 +52,6 @@ pipeline {
         }
     }
     post {
-        success {
-            echo 'test passed'
-        }
         failure {
             error 'test failed'
         }
