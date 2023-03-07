@@ -19,7 +19,7 @@ pipeline {
             }
             post {
                 always {
-                    junit 'space-hangar/target/surefire-reports/*.xml'
+                    junit '**/target/surefire-reports/*.xml, **/target/failsafe-reports/*.xml'
                 }
             }
         }
