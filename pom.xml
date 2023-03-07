@@ -29,6 +29,7 @@
     <!-- Fix for snakeyaml:1.30 CVE-2022-25857. Can be removed once Spring Boot version is bumped to 3.0.0+ -->
     <snakeyaml.version>1.33</snakeyaml.version>
     <!-- plugins -->
+    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
@@ -86,6 +87,26 @@
                 <goal>integration-test</goal>
                 <goal>verify</goal>
               </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <phase>verify</phase>
             </execution>
           </executions>
         </plugin>

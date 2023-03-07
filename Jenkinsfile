@@ -9,8 +9,9 @@ pipeline {
        FOO = 'bar'
     }
     options {
-        timeout(time: 5, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '5'))
+        timeout(time: 5, unit: 'MINUTES')
+        disableConcurrentBuilds()
     }
 
     stages {
@@ -54,8 +55,11 @@ pipeline {
         }
     }
     post {
+        success {
+            echo 'Build passed'
+        }
         failure {
-            error 'test failed'
+            error 'Build failed'
         }
     }
 }
