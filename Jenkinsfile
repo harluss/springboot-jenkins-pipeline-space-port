@@ -6,8 +6,7 @@ pipeline {
        jdk 'JDK'
     }
     environment {
-      FOO = 'bar'
-      SONAR_VER = '3.9.0.2155'
+       FOO = 'bar'
     }
     options {
         timeout(time: 5, unit: 'MINUTES')
@@ -26,9 +25,12 @@ pipeline {
             }
         }
         stage('SonarQube Scan') {
+            environment {
+                SONAR_VER = '3.9.0.2155'
+            }
             steps {
                 withSonarQubeEnv(installationName: 'SONARQUBE_SERVER') {
-                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_VER}:sonar -Dsonar.branch.name=$BRANCH_NAME'
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_VER}:sonar'
                 }
             }
         }
