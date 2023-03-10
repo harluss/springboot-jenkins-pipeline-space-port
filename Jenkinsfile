@@ -41,6 +41,7 @@ pipeline {
             }
             steps {
                 echo 'KABOOM!'
+                echo 'TEST'
             }
         }
         stage('SKADOOSH MAIN') {
