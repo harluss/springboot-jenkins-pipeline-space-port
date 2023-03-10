@@ -35,14 +35,24 @@ pipeline {
                 }
             }
         }
+        stage('ENV TEST') {
+            environment {
+                IMAGE = readMavenPom().getArtifactId()
+                VERSION = readMavenPom().getVersion()
+            }
+            steps {
+                echo 'EVN TEST!'
+                echo '${env.FOO} bar'
+                echo '${FOO} bar 2'
+                echo 'Docker image: ${IMAGE}, ver: ${VERSION}'
+            }
+        }
         stage('KABOOM PR') {
             when {
                 changeRequest()
             }
             steps {
                 echo 'KABOOM!'
-                echo '${env.FOO} bar'
-                echo '${FOO} bar 2'
             }
         }
         stage('SKADOOSH MAIN') {
