@@ -44,6 +44,7 @@ class SpaceshipIT extends BaseIT {
     spaceshipsBefore = spaceshipRepository.findAll();
   }
 
+  @SuppressWarnings("java:S2699")
   @DisplayName("Get Spaceships")
   @Test
   void getSpaceships_happyPath() {
@@ -52,6 +53,7 @@ class SpaceshipIT extends BaseIT {
     spaceshipSteps.thenResponseShouldBe200AndContainAllSpaceships();
   }
 
+  @SuppressWarnings("java:S2699")
   @DisplayName("Get Spaceship by Id")
   @Test
   void getSpaceshipById_happyPath() {
@@ -62,6 +64,7 @@ class SpaceshipIT extends BaseIT {
     spaceshipSteps.thenResponseShouldBe200AndContainCorrectSpaceship(expected);
   }
 
+  @SuppressWarnings("java:S2699")
   @DisplayName("Add Spaceship")
   @Test
   void addSpaceship_happyPath() {
@@ -73,6 +76,7 @@ class SpaceshipIT extends BaseIT {
     spaceshipSteps.thenResponseShouldBe201AndContainNewlyAddedSpaceship();
   }
 
+  @SuppressWarnings("java:S2699")
   @DisplayName("Update Spaceship by Id")
   @Test
   void updateSpaceshipById_happyPath() {
@@ -86,6 +90,7 @@ class SpaceshipIT extends BaseIT {
     spaceshipSteps.thenResponseShouldBe200AndContainUpdatedSpaceship(spaceshipToBeUpdated.getId());
   }
 
+  @SuppressWarnings("java:S2699")
   @DisplayName("Delete Spaceship by Id")
   @Test
   void deleteSpaceshipById_happyPath() {
