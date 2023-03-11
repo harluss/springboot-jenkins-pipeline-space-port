@@ -3,154 +3,101 @@ package com.project.hangar.integration;
 import com.project.hangar.common.BaseIT;
 import com.project.hangar.dto.SpaceshipRequest;
 import com.project.hangar.entity.SpaceshipEntity;
+import com.project.hangar.integration.steps.SpaceshipSteps;
 import com.project.hangar.repository.SpaceshipRepository;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
+import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Steps;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static com.project.hangar.common.Constants.buildRequest;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 
-@AutoConfigureMockMvc
+@ExtendWith({SerenityJUnit5Extension.class})
 class SpaceshipIT extends BaseIT {
-
-  private static final String TEST_API = "/api/v1/spaceships";
-
-  private static final String TEST_API_WITH_ID = "/api/v1/spaceships/{id}";
 
   private List<SpaceshipEntity> spaceshipsBefore;
 
   @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
   private SpaceshipRepository spaceshipRepository;
+
+  @Steps
+  private SpaceshipSteps spaceshipSteps;
+
+  @LocalServerPort
+  private int port;
+
+  @PostConstruct
+  public void setDefaultPort() {
+    SerenityRest.setDefaultPort(port);
+  }
 
   @BeforeEach
   void setUp() {
-    RestAssuredMockMvc.mockMvc(mockMvc);
     spaceshipsBefore = spaceshipRepository.findAll();
   }
 
+  @DisplayName("Get Spaceships")
   @Test
   void getSpaceships_happyPath() {
-
-    final List<SpaceshipEntity> actual = given()
-        .when()
-        .get(TEST_API)
-        .then()
-        .log().all()
-        .assertThat()
-        .statusCode(HttpStatus.OK.value())
-        .extract()
-        .body()
-        .as(new TypeRef<>() {
-        });
-
-    assertThat(actual).hasSize(spaceshipsBefore.size());
+    spaceshipSteps.givenSpaceshipsExist(spaceshipsBefore);
+    spaceshipSteps.whenGetRequestIsSent();
+    spaceshipSteps.thenResponseShouldBe200AndContainAllSpaceships();
   }
 
+  @DisplayName("Get Spaceship by Id")
   @Test
   void getSpaceshipById_happyPath() {
     final SpaceshipEntity expected = spaceshipsBefore.get(0);
 
-    final SpaceshipEntity actual = given()
-        .when()
-        .get(TEST_API_WITH_ID, expected.getId())
-        .then()
-        .log().all()
-        .assertThat()
-        .statusCode(HttpStatus.OK.value())
-        .extract()
-        .body()
-        .as(SpaceshipEntity.class);
-
-    assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    spaceshipSteps.givenSpaceshipsExist(spaceshipsBefore);
+    spaceshipSteps.whenGetRequestIsSentWithId(expected.getId());
+    spaceshipSteps.thenResponseShouldBe200AndContainCorrectSpaceship(expected);
   }
 
+  @DisplayName("Add Spaceship")
   @Test
   void addSpaceship_happyPath() {
-    final SpaceshipRequest request = buildRequest();
+    final SpaceshipRequest requestBody = buildRequest();
 
-    final SpaceshipEntity actual = given()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(objectToJsonString(request))
-        .when()
-        .post(TEST_API)
-        .then()
-        .log().all()
-        .assertThat()
-        .statusCode(HttpStatus.CREATED.value())
-        .header(HttpHeaders.LOCATION, notNullValue())
-        .extract()
-        .body()
-        .as(SpaceshipEntity.class);
-
-    final List<SpaceshipEntity> spaceshipsAfter = spaceshipRepository.findAll();
-
-    assertThat(spaceshipsBefore).doesNotContain(actual);
-    assertThat(spaceshipsAfter)
-        .contains(actual)
-        .hasSize(spaceshipsBefore.size() + 1);
-    assertThat(request).usingRecursiveComparison().isEqualTo(actual);
+    spaceshipSteps.givenSpaceshipRequest(requestBody);
+    spaceshipSteps.whenPostRequestIsSent();
+    spaceshipSteps.thenNewSpaceshipShouldBeAddedInDatabase(spaceshipsBefore, findAllSpaceshipsAfter());
+    spaceshipSteps.thenResponseShouldBe201AndContainNewlyAddedSpaceship();
   }
 
+  @DisplayName("Update Spaceship by Id")
   @Test
   void updateSpaceshipById_happyPath() {
     final SpaceshipRequest request = buildRequest();
-    final SpaceshipEntity toBeUpdated = spaceshipsBefore.get(0);
+    final SpaceshipEntity spaceshipToBeUpdated = spaceshipsBefore.get(0);
 
-    final SpaceshipEntity actual = given()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(objectToJsonString(request))
-        .when()
-        .put(TEST_API_WITH_ID, toBeUpdated.getId())
-        .then()
-        .log().all()
-        .assertThat()
-        .statusCode(HttpStatus.OK.value())
-        .extract()
-        .body()
-        .as(SpaceshipEntity.class);
-
-    final List<SpaceshipEntity> spaceshipsAfter = spaceshipRepository.findAll();
-
-    assertThat(toBeUpdated.getId()).isEqualTo(actual.getId());
-    assertThat(spaceshipsBefore)
-        .contains(toBeUpdated)
-        .doesNotContain(actual);
-    assertThat(spaceshipsAfter)
-        .doesNotContain(toBeUpdated)
-        .contains(actual);
+    spaceshipSteps.givenSpaceshipsExist(spaceshipsBefore);
+    spaceshipSteps.givenSpaceshipRequest(request);
+    spaceshipSteps.whenPutRequestIsSentWithId(spaceshipToBeUpdated.getId());
+    spaceshipSteps.thenCorrectSpaceshipShouldBeUpdated(findAllSpaceshipsAfter(), spaceshipToBeUpdated, request);
+    spaceshipSteps.thenResponseShouldBe200AndContainUpdatedSpaceship(spaceshipToBeUpdated.getId());
   }
 
+  @DisplayName("Delete Spaceship by Id")
   @Test
   void deleteSpaceshipById_happyPath() {
-    final SpaceshipEntity toBeDeleted = spaceshipsBefore.get(0);
+    final SpaceshipEntity spaceshipToBeDeleted = spaceshipsBefore.get(0);
 
-    given()
-        .when()
-        .delete(TEST_API_WITH_ID, toBeDeleted.getId())
-        .then()
-        .log().all()
-        .assertThat()
-        .statusCode(HttpStatus.NO_CONTENT.value());
+    spaceshipSteps.givenSpaceshipsExist(spaceshipsBefore);
+    spaceshipSteps.whenDeleteRequestIsSentWithId(spaceshipToBeDeleted.getId());
+    spaceshipSteps.thenCorrectSpaceshipShouldBeDeleted(findAllSpaceshipsAfter(), spaceshipToBeDeleted);
+    spaceshipSteps.thenResponseShouldBe204();
+  }
 
-    final List<SpaceshipEntity> spaceshipsAfter = spaceshipRepository.findAll();
-
-    assertThat(spaceshipsAfter)
-        .doesNotContain(toBeDeleted)
-        .hasSize(spaceshipsBefore.size() - 1);
+  private List<SpaceshipEntity> findAllSpaceshipsAfter() {
+    return spaceshipRepository.findAll();
   }
 }
