@@ -26,6 +26,7 @@ class HealthIT extends BaseIT {
     SerenityRest.setDefaultPort(port);
   }
 
+  @SuppressWarnings("java:S2699")
   @DisplayName("Health Check")
   @Test
   void healthCheck() {

@@ -9,7 +9,7 @@ pipeline {
        FOO = 'bar'
     }
     options {
-        buildDiscarder(logRotator(numToKeepStr: '5'))
+        buildDiscarder(logRotator(numToKeepStr: '3'))
         timeout(time: 5, unit: 'MINUTES')
         disableConcurrentBuilds()
     }
@@ -35,21 +35,23 @@ pipeline {
                 }
             }
         }
-        stage('KABOOM PR') {
+        stage('Build Docker Image') {
             when {
-                changeRequest()
+                anyOf {
+                    changeRequest()
+                    branch 'main'
+                }
             }
             steps {
-                echo 'KABOOM!'
-                echo 'TEST'
+                echo 'Docker Image KABOOM!'
             }
         }
-        stage('SKADOOSH MAIN') {
+        stage('Deploy') {
             when {
                 branch 'main'
             }
             steps {
-                echo 'SKADOOSH!'
+                echo 'Deploy SKADOOSH!'
             }
         }
     }
