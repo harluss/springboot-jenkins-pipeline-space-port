@@ -88,6 +88,18 @@ potentially false flag: https://github.com/spring-projects/spring-framework/issu
     </dependency>
 
     <dependency>
+      <groupId>net.serenity-bdd</groupId>
+      <artifactId>serenity-rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.serenity-bdd</groupId>
+      <artifactId>serenity-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.vladmihalcea</groupId>
       <artifactId>hibernate-types-55</artifactId>
     </dependency>
@@ -96,6 +108,11 @@ potentially false flag: https://github.com/spring-projects/spring-framework/issu
   <build>
     <plugins>
       <plugin>
+        <groupId>net.serenity-bdd.maven.plugins</groupId>
+        <artifactId>serenity-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
@@ -103,6 +120,11 @@ potentially false flag: https://github.com/spring-projects/spring-framework/issu
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

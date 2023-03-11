@@ -2,40 +2,65 @@ pipeline {
     agent any
 
     tools {
-       maven 'MVN_3_8_5'
-       jdk 'JDK_17'
+       maven 'MAVEN'
+       jdk 'JDK'
+    }
+    environment {
+       FOO = 'bar'
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        timeout(time: 5, unit: 'MINUTES')
+        disableConcurrentBuilds()
     }
 
     stages {
         stage('Build') {
             steps {
-//                 sh 'mvn clean verify'
-                  echo 'about to fail'
+                sh 'mvn clean verify'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml, **/target/failsafe-reports/*.xml'
+                }
             }
         }
-        stage('KABOOM PR') {
-            when {
-                changeRequest()
+        stage('SonarQube Scan') {
+            environment {
+                SONAR_VER = '3.9.0.2155'
             }
             steps {
-                echo 'KABOOM!'
+                withSonarQubeEnv(installationName: 'SONARQUBE_SERVER') {
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_VER}:sonar'
+                }
             }
         }
-        stage('SKADOOSH MAIN') {
+        stage('Build Docker Image') {
             when {
-                branch "main"
+                anyOf {
+                    changeRequest()
+                    branch 'main'
+                }
             }
             steps {
-                echo 'SKADOOSH!'
+                echo 'Docker Image KABOOM!'
+            }
+        }
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploy SKADOOSH!'
             }
         }
     }
     post {
         success {
-            echo 'test passed'
+            echo 'Build passed'
         }
         failure {
-            error 'test failed'
+            error 'Build failed'
         }
     }
 }

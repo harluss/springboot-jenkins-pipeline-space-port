@@ -1,40 +1,38 @@
 package com.project.hangar.integration;
 
 import com.project.hangar.common.BaseIT;
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.jupiter.api.BeforeEach;
+import com.project.hangar.integration.steps.HealthSteps;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
+import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Steps;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
+import javax.annotation.PostConstruct;
 
-@AutoConfigureMockMvc
+@ExtendWith({SerenityJUnit5Extension.class})
 class HealthIT extends BaseIT {
 
-  private static final String TEST_ACTUATOR_API = "/actuator/health";
+  @Steps
+  private HealthSteps healthSteps;
 
-  @Autowired
-  private MockMvc mockMvc;
+  @LocalServerPort
+  private int port;
 
-  @BeforeEach
-  void setUp() {
-    RestAssuredMockMvc.mockMvc(mockMvc);
+  @PostConstruct
+  public void setDefaultPort() {
+    SerenityRest.setDefaultPort(port);
   }
 
+  @SuppressWarnings("java:S2699")
+  @DisplayName("Health Check")
   @Test
-  void healthCheck_happyPath() {
-
-    given()
-        .when()
-        .get(TEST_ACTUATOR_API)
-        .then()
-        .log().body()
-        .assertThat()
-        .statusCode(HttpStatus.OK.value())
-        .body("status", equalToIgnoringCase("up"));
+  void healthCheck() {
+    healthSteps.givenAppIsRunning();
+    healthSteps.whenGetRequestIsSentToHealthEndpoint();
+    healthSteps.thenResponseShouldBe200AndContainStatusUp();
   }
+
 }

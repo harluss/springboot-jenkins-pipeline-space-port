@@ -11,7 +11,7 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class BaseIT extends TestUtil {
+public class BaseIT {
 
   private static final String POSTGRES_IMAGE = "postgres:15-alpine";
 

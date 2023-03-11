@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.8</version>
+    <version>2.7.9</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -22,14 +22,17 @@
   <properties>
     <java.version>17</java.version>
     <hibernate-types-55.version>2.21.1</hibernate-types-55.version>
-    <spring-cloud-dependencies.version>2021.0.5</spring-cloud-dependencies.version>
+    <serenity.version>3.6.12</serenity.version>
+    <spring-cloud-dependencies.version>2021.0.6</spring-cloud-dependencies.version>
     <spring-mock-mvc.version>5.3.0</spring-mock-mvc.version>
     <springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
     <testcontainers.version>1.17.6</testcontainers.version>
     <!-- Fix for snakeyaml:1.30 CVE-2022-25857. Can be removed once Spring Boot version is bumped to 3.0.0+ -->
     <snakeyaml.version>1.33</snakeyaml.version>
     <!-- plugins -->
+    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.0.0-M7</maven-surefire-report-plugin.version>
     <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
   </properties>
 
@@ -59,6 +62,26 @@
       </dependency>
 
       <dependency>
+        <groupId>net.serenity-bdd</groupId>
+        <artifactId>serenity-rest-assured</artifactId>
+        <version>${serenity.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>groovy-xml</artifactId>
+            <groupId>org.apache.groovy</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.serenity-bdd</groupId>
+        <artifactId>serenity-junit5</artifactId>
+        <version>${serenity.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>com.vladmihalcea</groupId>
         <artifactId>hibernate-types-55</artifactId>
         <version>${hibernate-types-55.version}</version>
@@ -69,6 +92,21 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>net.serenity-bdd.maven.plugins</groupId>
+          <artifactId>serenity-maven-plugin</artifactId>
+          <version>${serenity.version}</version>
+          <executions>
+            <execution>
+              <id>serenity-reports</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -88,6 +126,31 @@
             </execution>
           </executions>
         </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
+          <configuration>
+            <excludes>
+              <exclude>org/junit/jupiter/**/*</exclude>
+            </excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -104,12 +167,6 @@
           </excludes>
         </configuration>
       </plugin>
-
-      <!--      <plugin>-->
-      <!--        <groupId>org.apache.maven.plugins</groupId>-->
-      <!--        <artifactId>maven-surefire-plugin</artifactId>-->
-      <!--        <version>${maven-surefire-plugin.version}</version>-->
-      <!--      </plugin>-->
     </plugins>
   </build>
 
