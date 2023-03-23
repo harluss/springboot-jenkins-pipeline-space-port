@@ -124,8 +124,7 @@ public class SpaceshipSteps extends TestUtil {
 
   @Then("correct Spaceship should be updated")
   public void thenCorrectSpaceshipShouldBeUpdated(final List<SpaceshipEntity> allSpaceshipsAfter,
-                                                  final SpaceshipEntity spaceshipToBeUpdated,
-                                                  final SpaceshipRequest requestBody) {
+                                                  final SpaceshipEntity spaceshipToBeUpdated) {
     spaceshipsAfter = allSpaceshipsAfter;
 
     assertThat(spaceshipsBefore).contains(spaceshipToBeUpdated);

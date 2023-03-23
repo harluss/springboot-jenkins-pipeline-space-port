@@ -10,8 +10,8 @@ pipeline {
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
-        timeout(time: 5, unit: 'MINUTES')
         disableConcurrentBuilds()
+        timeout(time: 5, unit: 'MINUTES')
     }
 
     stages {
@@ -55,12 +55,13 @@ pipeline {
             }
         }
     }
-    post {
-        success {
-            echo 'Build passed'
-        }
-        failure {
-            error 'Build failed'
-        }
-    }
+//     post {
+//         success {
+//             echo 'Build passed'
+//         }
+//         failure {
+//             echo 'Sending notifications...'
+//             error 'Build failed'
+//         }
+//     }
 }
