@@ -81,8 +81,7 @@ class SpaceshipMapperImplTest {
 
     spaceshipMapper.updateEntityWithDto(entity, updateDto);
 
-    assertThat(entity.getName()).isEqualTo("updateDto.getName()");
-//    assertThat(entity.getName()).isEqualTo(updateDto.getName());
+    assertThat(entity.getName()).isEqualTo(updateDto.getName());
     assertThat(entity.getClassType()).isEqualTo(updateDto.getClassType());
     assertThat(entity.getMaxSpeed()).isEqualTo(updateDto.getMaxSpeed());
     assertThat(entity.getPayload()).isEqualTo(updateDto.getPayload());
