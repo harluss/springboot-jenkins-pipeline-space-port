@@ -6,9 +6,9 @@ pipeline {
        jdk 'JDK'
     }
     environment {
+       APP_NAME = readMavenPom().getArtifactId()
+//        APP_VERSION = readMavenPom().getVersion()
        DOCKERHUB_USER = 'harluss'
-       IMAGE_NAME = readMavenPom().getArtifactId()
-//        IMAGE_VERSION = readMavenPom().getVersion()
        SONAR_VER = '3.9.0.2155'
     }
     options {
@@ -43,9 +43,11 @@ pipeline {
 //                 }
 //             }
             steps {
+                def IMAGE_NAME = '${DOCKERHUB_USER}/${APP_NAME}'
+
                 sh """
                   docker build -t ${IMAGE_NAME} .
-                  docker push ${DOCKERHUB_USER}/${IMAGE_NAME}
+                  docker push ${IMAGE_NAME}
                 """
             }
         }
