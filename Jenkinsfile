@@ -37,12 +37,12 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            when {
-                anyOf {
-                    changeRequest()
-                    branch 'main'
-                }
-            }
+//             when {
+//                 anyOf {
+//                     changeRequest()
+//                     branch 'main'
+//                 }
+//             }
             steps {
                 echo 'Docker Image KABOOM!'
                 echo '${IMAGE_NAME}:${IMAGE_VERSION'
