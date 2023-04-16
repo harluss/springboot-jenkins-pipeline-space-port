@@ -7,7 +7,6 @@ pipeline {
     }
     environment {
        APP_NAME = readMavenPom().getArtifactId()
-//        APP_VERSION = readMavenPom().getVersion()
        DOCKERHUB_USER = 'harluss'
        IMAGE_NAME = '${DOCKERHUB_USER}/${APP_NAME}'
        SONAR_VER = '3.9.0.2155'
@@ -19,7 +18,7 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Build Project') {
             steps {
                 sh 'mvn clean verify'
             }
@@ -37,13 +36,14 @@ pipeline {
             }
         }
         stage('Build and Publish Docker Image') {
-//             when {
-//                 anyOf {
-//                     changeRequest()
-//                     branch 'main'
-//                 }
-//             }
+            when {
+                anyOf {
+                    changeRequest()
+                    branch 'main'
+                }
+            }
             steps {
+            // using latest tag only for demo purposes
                 sh """
                   docker build -t ${IMAGE_NAME} .
                   docker push ${IMAGE_NAME}
@@ -51,13 +51,4 @@ pipeline {
             }
         }
     }
-//     post {
-//         success {
-//             echo 'Build passed'
-//         }
-//         failure {
-//             echo 'Sending notifications...'
-//             error 'Build failed'
-//         }
-//     }
 }
