@@ -7,7 +7,8 @@ pipeline {
     }
     environment {
        IMAGE_NAME = readMavenPom().getArtifactId()
-       IMAGE_VERSION = readMavenPom().getVersion()
+//        IMAGE_VERSION = readMavenPom().getVersion()
+       SONAR_VER = '3.9.0.2155'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
@@ -27,9 +28,6 @@ pipeline {
             }
         }
         stage('SonarQube Scan') {
-            environment {
-                SONAR_VER = '3.9.0.2155'
-            }
             steps {
                 withSonarQubeEnv(installationName: 'SONARQUBE_SERVER') {
                     sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_VER}:sonar'
@@ -44,11 +42,18 @@ pipeline {
 //                 }
 //             }
             steps {
-                echo '${IMAGE_NAME}:${IMAGE_VERSION}'
-//                 sh 'docker build -t ${IMAGE_NAME} .'
-                def dockerImage = docker.build('${IMAGE_NAME}:${IMAGE_VERSION}')
-                dockerImage.push()
-                dockerImage.push('latest')
+                echo '1 $BUILD_NUMBER'
+                echo '2 ${BUILD_NUMBER}'
+//                 sh """
+//                   docker build -t ${IMAGE_NAME} .
+//                   docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${IMAGE_VERSION}
+//                   docker push ${IMAGE_VERSION}
+//                 """
+
+                script {
+                    dockerImage = docker.build '${IMAGE_NAME}'
+                    dockerImage.push 'latest'
+                }
             }
         }
         stage('Deploy') {
