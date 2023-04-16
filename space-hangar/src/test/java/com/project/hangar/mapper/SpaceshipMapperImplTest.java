@@ -7,7 +7,10 @@ import com.project.hangar.entity.SpaceshipEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.project.hangar.common.Constants.*;
+import static com.project.hangar.common.Constants.buildDto;
+import static com.project.hangar.common.Constants.buildEntity;
+import static com.project.hangar.common.Constants.buildRequest;
+import static com.project.hangar.common.Constants.buildResponse;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class SpaceshipMapperImplTest {
@@ -78,7 +81,8 @@ class SpaceshipMapperImplTest {
 
     spaceshipMapper.updateEntityWithDto(entity, updateDto);
 
-    assertThat(entity.getName()).isEqualTo(updateDto.getName());
+    assertThat(entity.getName()).isEqualTo("updateDto.getName()");
+//    assertThat(entity.getName()).isEqualTo(updateDto.getName());
     assertThat(entity.getClassType()).isEqualTo(updateDto.getClassType());
     assertThat(entity.getMaxSpeed()).isEqualTo(updateDto.getMaxSpeed());
     assertThat(entity.getPayload()).isEqualTo(updateDto.getPayload());
