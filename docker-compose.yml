@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   database-hangar:
-    container_name: space_port_hangar_postgres
+    container_name: space_hangar_postgres
     image: postgres:15-alpine
     restart: unless-stopped
     environment:
@@ -13,3 +13,19 @@ services:
       - "5432:5432"
     volumes:
       - ./space-hangar/src/test/resources:/docker-entrypoint-initdb.d
+
+  application-hangar:
+    container_name: space_hangar_app
+    image: harluss/space-jenkins:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: space_hangar_postgres:5432
+      DATABASE_NAME: space_port_db
+      DATABASE_USER: postgres
+      DATABASE_PASS: password
+    ports:
+      - "8080:8082"
+    depends_on:
+      - database-hangar
+    profiles:
+      - app

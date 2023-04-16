@@ -86,7 +86,7 @@ class SpaceshipIT extends BaseIT {
     spaceshipSteps.givenSpaceshipsExist(spaceshipsBefore);
     spaceshipSteps.givenSpaceshipRequest(request);
     spaceshipSteps.whenPutRequestIsSentWithId(spaceshipToBeUpdated.getId());
-    spaceshipSteps.thenCorrectSpaceshipShouldBeUpdated(findAllSpaceshipsAfter(), spaceshipToBeUpdated, request);
+    spaceshipSteps.thenCorrectSpaceshipShouldBeUpdated(findAllSpaceshipsAfter(), spaceshipToBeUpdated);
     spaceshipSteps.thenResponseShouldBe200AndContainUpdatedSpaceship(spaceshipToBeUpdated.getId());
   }
 
