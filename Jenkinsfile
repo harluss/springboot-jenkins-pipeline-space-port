@@ -6,7 +6,8 @@ pipeline {
        jdk 'JDK'
     }
     environment {
-       FOO = 'bar'
+       IMAGE_NAME = readMavenPom().getArtifactId()
+       IMAGE_VERSION = readMavenPom().getVersion()
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
@@ -44,6 +45,8 @@ pipeline {
             }
             steps {
                 echo 'Docker Image KABOOM!'
+                echo '${IMAGE_NAME}:${IMAGE_VERSION'
+                sh 'docker build -t ${IMAGE_NAME} .'
             }
         }
         stage('Deploy') {
