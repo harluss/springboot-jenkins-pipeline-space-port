@@ -6,6 +6,7 @@ pipeline {
        jdk 'JDK'
     }
     environment {
+       DOCKERHUB_USER = 'harluss'
        IMAGE_NAME = readMavenPom().getArtifactId()
 //        IMAGE_VERSION = readMavenPom().getVersion()
        SONAR_VER = '3.9.0.2155'
@@ -34,7 +35,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Build and Publish Docker Image') {
 //             when {
 //                 anyOf {
 //                     changeRequest()
@@ -42,26 +43,10 @@ pipeline {
 //                 }
 //             }
             steps {
-                echo '1 $BUILD_NUMBER'
-                echo '2 ${BUILD_NUMBER}'
-//                 sh """
-//                   docker build -t ${IMAGE_NAME} .
-//                   docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${IMAGE_VERSION}
-//                   docker push ${IMAGE_VERSION}
-//                 """
-
-                script {
-                    dockerImage = docker.build('${IMAGE_NAME}')
-                    dockerImage.push('latest')
-                }
-            }
-        }
-        stage('Deploy') {
-            when {
-                branch 'main'
-            }
-            steps {
-                echo 'Deploy SKADOOSH!'
+                sh """
+                  docker build -t ${IMAGE_NAME} .
+                  docker push ${DOCKERHUB_USER}/${IMAGE_NAME}
+                """
             }
         }
     }
