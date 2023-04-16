@@ -51,8 +51,8 @@ pipeline {
 //                 """
 
                 script {
-                    dockerImage = docker.build '${IMAGE_NAME}'
-                    dockerImage.push 'latest'
+                    dockerImage = docker.build('${IMAGE_NAME}')
+                    dockerImage.push('latest')
                 }
             }
         }
