@@ -44,9 +44,11 @@ pipeline {
 //                 }
 //             }
             steps {
-                echo 'Docker Image KABOOM!'
-                echo '${IMAGE_NAME}:${IMAGE_VERSION'
-                sh 'docker build -t ${IMAGE_NAME} .'
+                echo '${IMAGE_NAME}:${IMAGE_VERSION}'
+//                 sh 'docker build -t ${IMAGE_NAME} .'
+                def dockerImage = docker.build('${IMAGE_NAME}:${IMAGE_VERSION}')
+                dockerImage.push()
+                dockerImage.push('latest')
             }
         }
         stage('Deploy') {
