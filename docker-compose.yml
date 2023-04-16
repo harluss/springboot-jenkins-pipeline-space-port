@@ -24,7 +24,7 @@ services:
       DATABASE_USER: postgres
       DATABASE_PASS: password
     ports:
-      - "8080:8082"
+      - "8082:8082"
     depends_on:
       - database-hangar
     profiles:
